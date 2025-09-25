@@ -1,0 +1,10 @@
+
+POST http://34.147.185.183:8002/ask_database
+Content-Type : application/json
+
+{
+    "question" : "What is my average balance?"
+}
+
+###
+GET http://localhost:3000/query
