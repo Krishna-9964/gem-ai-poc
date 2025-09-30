@@ -1,0 +1,25 @@
+.loading {
+  font-size: 14px;
+  font-weight: bold;
+  font-family: sans-serif;
+}
+
+.dots span {
+  opacity: 0;
+  animation: blink 0.5s infinite;
+}
+
+.dots span:nth-child(1) {
+  animation-delay: 0.3s;
+}
+.dots span:nth-child(2) {
+  animation-delay: 0.5s;
+}
+.dots span:nth-child(3) {
+  animation-delay: 0.6s;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}

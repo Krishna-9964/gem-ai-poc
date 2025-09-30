@@ -2,6 +2,7 @@ import "./Home.scss";
 import logo from "../lloyds/logo.png";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
+import {Loading} from "./Loader";
 
 const Home = () => {
   const initialData = [
@@ -31,33 +32,42 @@ const Home = () => {
     "WearableTech",
     "NaturalLanguageProcessing",
   ];
-  const [suggestionData, setSuggestionData] = useState<string[]>([]);
-  const [result, setResult] = useState({loading : false, error : false, data : null})
-  
 
-  const askAnything = async (question : string) => {
-    // try{
-        // setResult({loading : true, error : false, data : null})
-        // const response =
-         await axios.post('http://34.147.185.183:8003/ask_database', {
-          question: question
-        },{
-          headers:{
-            'Content-Type':'application/json'
-          }
-        })
-        // .then(response => setResult({loading : true, error : false, data : response.data.response}))
-        // .catch(error => setResult({loading : false, error : true, data : null}));
-        .then(resopnse => console.log(resopnse.data.response))
-        .catch(error => console.log('error', error));
-        
-    // }
-    // catch(error){
-    //   console.error(error);
-    //   setResult({loading : false, error : true, data : null});
-    //   throw error;
-    // }
+  interface chatItem {
+    query: string;
+    response: string;
   }
+
+  const [suggestionData, setSuggestionData] = useState<string[]>([]);
+  const [chatHistory, setChatHistory] = useState<chatItem[]>([]);
+  const [currentChat, setCurrentChat] = useState<chatItem>({
+    query: "",
+    response: "",
+  });
+  const [inputText, setInputText] = useState("");
+
+  const askAnything = async (question: string) => {
+    await axios
+      .post(
+        "http://34.105.147.178:8003/ask_database",
+        {
+          question: question,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((response) => {
+        // console.log(response.data.response);
+        setCurrentChat({
+          query: inputText,
+          response: response.data.response,
+        });
+      })
+      .catch((error) => console.log("error", error));
+  };
   // const makeRequest = () => {
   //   axios
   //     .get("http://localhost:3001/test")
@@ -70,22 +80,47 @@ const Home = () => {
   //     });
   // };
 
-  useEffect(()=> {
-    askAnything('What are top 5 transactions?');  
-  })
-    
+  // useEffect(() => {
+  //   askAnything("What are top 5 transactions?");
+  // });
 
-  const handleSearchInput = (event:any) => {
-    let filteredList = initialData
+  const handleKeyPress = (event: any) => {
+    if (inputText === "") {
+      return;
+    }
+
+    if (event.key === "Enter") {
+      setCurrentChat({ query: inputText, response: "LOADING" });
+      askAnything(inputText);
+      setInputText("");
+
+      setChatHistory((prev) => [...prev, currentChat]);
+    }
+  };
+
+  const handleButtonClick = () => {
+    if (inputText === "") {
+      return;
+    }
+    setCurrentChat({ query: inputText, response: "LOADING" });
+    askAnything(inputText);
+    setInputText("");
+
+    setChatHistory((prev) => [...prev, currentChat]);
+  };
+
+  const handleSearchInput = (event: any) => {
+    let filteredList = initialData;
     const searchString = event.target.value;
-    console.log(searchString)
+    setInputText(searchString);
+    // console.log(searchString);
 
-    filteredList = filteredList.filter(item => 
-      item.toLowerCase().includes(searchString.toLowerCase())
-    )
-    console.log(typeof filteredList)
-    setSuggestionData(filteredList)
-  }
+    // filteredList = filteredList.filter((item) =>
+    //   item.toLowerCase().includes(searchString.toLowerCase())
+    // );
+    // console.log(typeof filteredList);
+    // setSuggestionData(filteredList);
+  };
 
   return (
     <div className="outer-container">
@@ -94,9 +129,13 @@ const Home = () => {
           <img src={logo} alt="logo" className="lbgLogo" />
           <div className="header-second-half">
             <h5 className="lbgText">COMMERCIAL BANKING</h5>
-            <span className="phoneBtn"><i className="fa-solid fa-phone"/></span>
+            <span className="phoneBtn">
+              <i className="fa-solid fa-phone" />
+            </span>
             <button type="button" className="logoutBtn btn">
-              <i className="fa-solid fa-lock"/>Logout</button>
+              <i className="fa-solid fa-lock" />
+              Logout
+            </button>
           </div>
         </div>
         <div className="navbar">
@@ -122,25 +161,65 @@ const Home = () => {
           </button>
         </div> */}
         {/* <p>{result.loading ? "Loading..." : result.error ? "Error" : result.data ? result.data : "hello"}</p> */}
-        <div className="search-container">
-          <form action="/search" method="GET">
-          <i className="fa-solid fa-magnifying-glass fa-xl"/>
-            <input
-              type="text"
-              name="q"
-              className="search-input"
-              placeholder="Ask anything"
-              onChange={handleSearchInput}
-            />
-            <span><i className="fa-solid fa-microphone fa-lg"/></span>
-            <span className="search-btn"><i className="fa-solid fa-arrow-up"></i></span>
 
-          </form>
-          {/* {suggestionData.length > 0 && 
+        <div className="chat-box">
+          {currentChat.query !== "" && currentChat.response !== "" && (
+            <div className="chat-container">
+              <div className="chat-history">
+                {chatHistory.length >= 1 &&
+                  chatHistory.map((chat) => {
+                    if (chat.query !== "") {
+                      return (
+                        <>
+                          <div className="query">
+                            <p>{chat.query}</p>
+                          </div>
+                          <div className="response">
+                            <p>{chat.response}</p>
+                          </div>
+                        </>
+                      );
+                    }
+                  })}
+              </div>
+
+              <div className="query">
+                <p>{currentChat.query}</p>
+              </div>
+              <div className="response">
+                {currentChat.response === "LOADING" ? (
+                  <Loading />
+                ) : (
+                  <p>{currentChat.response}</p>
+                )}
+              </div>
+            </div>
+          )}
+          <div className="search-container">
+            {/* <form> */}
+            <div className="form">
+              <i className="fa-solid fa-magnifying-glass fa-xl" />
+              <input
+                type="text"
+                className="search-input"
+                placeholder="Ask anything"
+                onChange={handleSearchInput}
+                value={inputText}
+                onKeyPress={handleKeyPress}
+              />
+              <span>
+                <i className="fa-solid fa-microphone fa-lg" />
+              </span>
+              <span className="search-btn" onClick={handleButtonClick}>
+                <i className="fa-solid fa-arrow-up"></i>
+              </span>
+            </div>
+            {/* </form> */}
+            {/* {suggestionData.length > 0 && 
           <ul className="suggestion-container">
             {suggestionData.map(item => <li>{item}</li>)}
           </ul>} */}
-          
+          </div>
         </div>
       </div>
       <div className="navbar">
@@ -157,6 +236,5 @@ const Home = () => {
 };
 
 export default Home;
-
 
 // curl -X POST http://34.147.185.183:8000/ask_database -H "Content-Type: application/json" -d '{"question":"What is my average balance?"}'
