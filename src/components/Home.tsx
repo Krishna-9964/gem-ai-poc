@@ -1,55 +1,31 @@
-import "./Home.scss";
-import logo from "../lloyds/logo.png";
-import { useEffect, useRef, useState } from "react";
 import axios from "axios";
-import {Loading} from "./Loader";
+import { useState } from "react";
+import logo from "../lloyds/logo.png";
+import "./Home.scss";
+import { Loading } from "./Loader";
 
-const Home = () => {
-  const initialData = [
-    "ArtificialIntelligence",
-    "MachineLearning",
-    "Blockchain",
-    "CloudComputing",
-    "Cybersecurity",
-    "BigData",
-    "InternetOfThings",
-    "VirtualReality",
-    "AugmentedReality",
-    "QuantumComputing",
-    "5G",
-    "Automation",
-    "DevOps",
-    "DataScience",
-    "Cryptocurrency",
-    "SoftwareEngineering",
-    "WebDevelopment",
-    "MobileApps",
-    "Networking",
-    "Robotics",
-    "DigitalTransformation",
-    "EdgeComputing",
-    "SmartDevices",
-    "WearableTech",
-    "NaturalLanguageProcessing",
-  ];
 
   interface chatItem {
     query: string;
     response: string;
+    error : string;
   }
 
+const Home = () => {
+  
   const [suggestionData, setSuggestionData] = useState<string[]>([]);
   const [chatHistory, setChatHistory] = useState<chatItem[]>([]);
   const [currentChat, setCurrentChat] = useState<chatItem>({
     query: "",
     response: "",
+    error: ""
   });
   const [inputText, setInputText] = useState("");
 
   const askAnything = async (question: string) => {
     await axios
       .post(
-        "http://34.105.147.178:8003/ask_database",
+        "http://34.105.147.178:8002/ask_database",
         {
           question: question,
         },
@@ -64,9 +40,17 @@ const Home = () => {
         setCurrentChat({
           query: inputText,
           response: response.data.response,
+          error : ""
         });
       })
-      .catch((error) => console.log("error", error));
+      .catch((error) => {
+        console.log("error", error);
+        setCurrentChat({
+          query: inputText,
+          response: "ERROR",
+          error: error.message
+        });
+      });
   };
   // const makeRequest = () => {
   //   axios
@@ -90,7 +74,7 @@ const Home = () => {
     }
 
     if (event.key === "Enter") {
-      setCurrentChat({ query: inputText, response: "LOADING" });
+      setCurrentChat({ query: inputText, response: "LOADING", error : "" });
       askAnything(inputText);
       setInputText("");
 
@@ -102,7 +86,7 @@ const Home = () => {
     if (inputText === "") {
       return;
     }
-    setCurrentChat({ query: inputText, response: "LOADING" });
+    setCurrentChat({ query: inputText, response: "LOADING", error : "" });
     askAnything(inputText);
     setInputText("");
 
@@ -110,7 +94,7 @@ const Home = () => {
   };
 
   const handleSearchInput = (event: any) => {
-    let filteredList = initialData;
+    // let filteredList = initialData;
     const searchString = event.target.value;
     setInputText(searchString);
     // console.log(searchString);
@@ -189,6 +173,8 @@ const Home = () => {
               <div className="response">
                 {currentChat.response === "LOADING" ? (
                   <Loading />
+                ) : currentChat.response === "ERROR" ? (
+                  <p style={{ color: "red" }}>{currentChat.error}</p>
                 ) : (
                   <p>{currentChat.response}</p>
                 )}
@@ -196,7 +182,6 @@ const Home = () => {
             </div>
           )}
           <div className="search-container">
-            {/* <form> */}
             <div className="form">
               <i className="fa-solid fa-magnifying-glass fa-xl" />
               <input
@@ -214,7 +199,6 @@ const Home = () => {
                 <i className="fa-solid fa-arrow-up"></i>
               </span>
             </div>
-            {/* </form> */}
             {/* {suggestionData.length > 0 && 
           <ul className="suggestion-container">
             {suggestionData.map(item => <li>{item}</li>)}
@@ -236,5 +220,3 @@ const Home = () => {
 };
 
 export default Home;
-
-// curl -X POST http://34.147.185.183:8000/ask_database -H "Content-Type: application/json" -d '{"question":"What is my average balance?"}'
