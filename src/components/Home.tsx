@@ -39,7 +39,7 @@ const Home = () => {
         // console.log(response.data.response);
         setCurrentChat({
           query: inputText,
-          response: response.data.response,
+          response: response.data.response || response.data.error,
           error: "",
         });
       })
