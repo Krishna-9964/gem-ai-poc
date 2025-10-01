@@ -3,22 +3,22 @@ import { useState } from "react";
 import logo from "../lloyds/logo.png";
 import "./Home.scss";
 import { Loading } from "./Loader";
+import ReactMarkdown from "react-markdown";
+import rehypeHighlight from "rehype-highlight";
 
-
-  interface chatItem {
-    query: string;
-    response: string;
-    error : string;
-  }
+interface chatItem {
+  query: string;
+  response: string;
+  error: string;
+}
 
 const Home = () => {
-  
   const [suggestionData, setSuggestionData] = useState<string[]>([]);
   const [chatHistory, setChatHistory] = useState<chatItem[]>([]);
   const [currentChat, setCurrentChat] = useState<chatItem>({
     query: "",
     response: "",
-    error: ""
+    error: "",
   });
   const [inputText, setInputText] = useState("");
 
@@ -40,7 +40,7 @@ const Home = () => {
         setCurrentChat({
           query: inputText,
           response: response.data.response,
-          error : ""
+          error: "",
         });
       })
       .catch((error) => {
@@ -48,7 +48,7 @@ const Home = () => {
         setCurrentChat({
           query: inputText,
           response: "ERROR",
-          error: error.message
+          error: error.message,
         });
       });
   };
@@ -74,7 +74,7 @@ const Home = () => {
     }
 
     if (event.key === "Enter") {
-      setCurrentChat({ query: inputText, response: "LOADING", error : "" });
+      setCurrentChat({ query: inputText, response: "LOADING", error: "" });
       askAnything(inputText);
       setInputText("");
 
@@ -86,7 +86,7 @@ const Home = () => {
     if (inputText === "") {
       return;
     }
-    setCurrentChat({ query: inputText, response: "LOADING", error : "" });
+    setCurrentChat({ query: inputText, response: "LOADING", error: "" });
     askAnything(inputText);
     setInputText("");
 
@@ -159,7 +159,9 @@ const Home = () => {
                             <p>{chat.query}</p>
                           </div>
                           <div className="response">
-                            <p>{chat.response}</p>
+                            <ReactMarkdown rehypePlugins={[rehypeHighlight]}>
+                              {chat.response}
+                            </ReactMarkdown>
                           </div>
                         </>
                       );
@@ -176,7 +178,9 @@ const Home = () => {
                 ) : currentChat.response === "ERROR" ? (
                   <p style={{ color: "red" }}>{currentChat.error}</p>
                 ) : (
-                  <p>{currentChat.response}</p>
+                  <ReactMarkdown rehypePlugins={[rehypeHighlight]}>
+                    {currentChat.response}
+                  </ReactMarkdown>
                 )}
               </div>
             </div>
