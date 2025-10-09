@@ -1,10 +1,13 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import logo from "../lloyds/logo.png";
 import "./Home.scss";
 import { Loading } from "./Loader";
 import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
+import QuickQueries from "./QuickQueries";
+import quickLinks from "../constants/quickLinks";
+import QuickProcess from "./QuickProcess";
 
 interface chatItem {
   query: string;
@@ -21,7 +24,8 @@ const Home = () => {
     error: "",
   });
   const [inputText, setInputText] = useState("");
-
+  const [showPopup, setShowPopup] = useState(false);
+  6;
   const askAnything = async (question: string) => {
     await axios
       .post(
@@ -36,9 +40,9 @@ const Home = () => {
         }
       )
       .then((response) => {
-        // console.log(response.data.response);
+        console.log(response.data.response);
         setCurrentChat({
-          query: inputText,
+          query: question,
           response: response.data.response || response.data.error,
           error: "",
         });
@@ -46,7 +50,7 @@ const Home = () => {
       .catch((error) => {
         console.log("error", error);
         setCurrentChat({
-          query: inputText,
+          query: question,
           response: "ERROR",
           error: error.message,
         });
@@ -69,7 +73,7 @@ const Home = () => {
   // });
 
   const handleKeyPress = (event: any) => {
-    if (inputText === "") {
+    if (inputText === "" || currentChat.response === "LOADING") {
       return;
     }
 
@@ -83,13 +87,12 @@ const Home = () => {
   };
 
   const handleButtonClick = () => {
-    if (inputText === "") {
+    if (inputText === "" || currentChat.response === "LOADING") {
       return;
     }
     setCurrentChat({ query: inputText, response: "LOADING", error: "" });
     askAnything(inputText);
     setInputText("");
-
     setChatHistory((prev) => [...prev, currentChat]);
   };
 
@@ -105,6 +108,25 @@ const Home = () => {
     // console.log(typeof filteredList);
     // setSuggestionData(filteredList);
   };
+
+  const handleQuickLinkClick = (inputQuery: string) => {
+    if (currentChat.response === "LOADING") {
+      return;
+    }
+    console.log(inputQuery);
+    setCurrentChat({ query: inputQuery, response: "LOADING", error: "" });
+    askAnything(inputQuery);
+    setChatHistory((prev) => [...prev, currentChat]);
+  };
+
+  const handlePopup = (showPopup: boolean) => {
+    setShowPopup(showPopup);
+  };
+
+  // useEffect(() =>{
+  //   console.log('chat', chatHistory)
+
+  // }, [chatHistory])
 
   return (
     <div className="outer-container">
@@ -208,6 +230,16 @@ const Home = () => {
             {suggestionData.map(item => <li>{item}</li>)}
           </ul>} */}
           </div>
+          {quickLinks.map((item) => {
+            return (
+              <QuickQueries
+                key={item.id}
+                quickLink={item}
+                handleClick={handleQuickLinkClick}
+                showPopup={handlePopup}
+              />
+            );
+          })}
         </div>
       </div>
       <div className="navbar">
@@ -219,6 +251,7 @@ const Home = () => {
           <li>Privacy</li>
         </ul>
       </div>
+      {showPopup && <QuickProcess showPopup={handlePopup} />}
     </div>
   );
 };

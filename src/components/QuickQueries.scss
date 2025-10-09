@@ -1,0 +1,17 @@
+.quick-link-container{
+    text-align: start;
+    margin : 10px 70px 0px 20px;
+    opacity: 55%;
+    span i{
+        height: 10px;
+        width: 10px;
+    }
+    .quick-link{
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-left: 15px;
+        margin-bottom: 0;
+
+    }
+}

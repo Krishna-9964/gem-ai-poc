@@ -12,7 +12,7 @@ export const Loader = () => {
 export const Loading = () => {
   return (
     <div className="loading">
-      Loading<span className="dots">
+      I'm working on it<span className="dots">
         <span>.</span>
         <span>.</span>
         <span>.</span>
