@@ -12,7 +12,7 @@ const quickLinks : IquickLink[] = [
     },
     {
         id : 2,
-        query : "Check my current balance",
+        query : "Check the balance for account GB/304065/00006",
         type : "query"
     },
     {
