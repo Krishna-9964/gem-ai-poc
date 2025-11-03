@@ -1,13 +1,13 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import ReactMarkdown from "react-markdown";
+import rehypeHighlight from "rehype-highlight";
+import quickLinks from "../constants/quickLinks";
 import logo from "../lloyds/logo.png";
 import "./Home.scss";
 import { Loading } from "./Loader";
-import ReactMarkdown from "react-markdown";
-import rehypeHighlight from "rehype-highlight";
-import QuickQueries from "./QuickQueries";
-import quickLinks from "../constants/quickLinks";
 import QuickProcess from "./QuickProcess";
+import QuickQueries from "./QuickQueries";
 
 interface chatItem {
   query: string;
@@ -29,7 +29,7 @@ const Home = () => {
   const askAnything = async (question: string) => {
     await axios
       .post(
-        "http://34.105.147.178:8002/ask_database",
+        "http://35.242.134.125:8002/ask_database",
         {
           question: question,
         },
@@ -230,7 +230,7 @@ const Home = () => {
             {suggestionData.map(item => <li>{item}</li>)}
           </ul>} */}
           </div>
-          {quickLinks.map((item) => {
+                    {quickLinks.map((item) => {
             return (
               <QuickQueries
                 key={item.id}
