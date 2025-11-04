@@ -168,8 +168,8 @@ i {
     font-weight: 500;
     height: 100%;
     overflow-y: auto;
-    scrollbar-width: "none";
-    -ms-overflow-style: "none";
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 
     .query {
       max-width: $container_width;
