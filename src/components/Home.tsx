@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import quickLinks from "../constants/quickLinks";
@@ -25,7 +25,7 @@ const Home = () => {
   });
   const [inputText, setInputText] = useState("");
   const [showPopup, setShowPopup] = useState(false);
-  6;
+  const scrollRef = useRef<HTMLDivElement>(null);
   const askAnything = async (question: string) => {
     await axios
       .post(
@@ -123,10 +123,12 @@ const Home = () => {
     setShowPopup(showPopup);
   };
 
-  // useEffect(() =>{
-  //   console.log('chat', chatHistory)
-
-  // }, [chatHistory])
+  useEffect(() => {
+    const element = document.getElementById('#currentChat');
+    if(element){
+      element.scrollIntoView({behavior : 'smooth'})
+    }
+  }, []);
 
   return (
     <div className="outer-container">
@@ -194,7 +196,7 @@ const Home = () => {
               <div className="query">
                 <p>{currentChat.query}</p>
               </div>
-              <div className="response">
+              <div className="response" id="currentChat" ref={scrollRef}>
                 {currentChat.response === "LOADING" ? (
                   <Loading />
                 ) : currentChat.response === "ERROR" ? (
@@ -230,7 +232,7 @@ const Home = () => {
             {suggestionData.map(item => <li>{item}</li>)}
           </ul>} */}
           </div>
-                    {quickLinks.map((item) => {
+          {quickLinks.map((item) => {
             return (
               <QuickQueries
                 key={item.id}
