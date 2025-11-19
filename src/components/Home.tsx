@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import quickLinks from "../constants/quickLinks";
-import logo from "../lloyds/logo.png";
 import "./Home.scss";
 import { Loading } from "./Loader";
 import QuickProcess from "./QuickProcess";
@@ -124,39 +123,15 @@ const Home = () => {
   };
 
   useEffect(() => {
-    const element = document.getElementById('#currentChat');
-    if(element){
-      element.scrollIntoView({behavior : 'smooth'})
+    const element = document.getElementById("#currentChat");
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
     }
   }, []);
 
   return (
-    <div className="outer-container">
-      <div className="masthead">
-        <div className="container-fluid header">
-          <img src={logo} alt="logo" className="lbgLogo" />
-          <div className="header-second-half">
-            <h5 className="lbgText">COMMERCIAL BANKING</h5>
-            <span className="phoneBtn">
-              <i className="fa-solid fa-phone" />
-            </span>
-            <button type="button" className="logoutBtn btn">
-              <i className="fa-solid fa-lock" />
-              Logout
-            </button>
-          </div>
-        </div>
-        <div className="navbar">
-          <ul>
-            <li>Home</li>
-            <li>Admin</li>
-            <li>Payments</li>
-            <li>Reports</li>
-          </ul>
-        </div>
-      </div>
-      <div className="container-fluid main-content">
-        {/* <div className="search-bar d-flex">
+    <>
+      {/* <div className="search-bar d-flex">
           <input
             className="input-text"
             type="text"
@@ -168,93 +143,91 @@ const Home = () => {
             Search
           </button>
         </div> */}
-        {/* <p>{result.loading ? "Loading..." : result.error ? "Error" : result.data ? result.data : "hello"}</p> */}
+      {/* <p>{result.loading ? "Loading..." : result.error ? "Error" : result.data ? result.data : "hello"}</p> */}
 
-        <div className="chat-box">
-          {currentChat.query !== "" && currentChat.response !== "" && (
-            <div className="chat-container">
-              <div className="chat-history">
-                {chatHistory.length >= 1 &&
-                  chatHistory.map((chat) => {
-                    if (chat.query !== "") {
-                      return (
-                        <>
-                          <div className="query">
-                            <p>{chat.query}</p>
-                          </div>
-                          <div className="response">
+      <div className="chat-box">
+        {currentChat.query !== "" && currentChat.response !== "" && (
+          <div className="chat-container">
+            <div className="chat-history">
+              {chatHistory.length >= 1 &&
+                chatHistory.map((chat) => {
+                  if (chat.query !== "") {
+                    return (
+                      <>
+                        <div className="query">
+                          <p>{chat.query}</p>
+                        </div>
+                        <div className="response">
+                          <div className="lbg-logo" />
+                          <div>
                             <ReactMarkdown rehypePlugins={[rehypeHighlight]}>
                               {chat.response}
                             </ReactMarkdown>
                           </div>
-                        </>
-                      );
-                    }
-                  })}
-              </div>
+                        </div>
+                      </>
+                    );
+                  }
+                })}
+            </div>
 
-              <div className="query">
-                <p>{currentChat.query}</p>
-              </div>
-              <div className="response" id="currentChat" ref={scrollRef}>
-                {currentChat.response === "LOADING" ? (
-                  <Loading />
-                ) : currentChat.response === "ERROR" ? (
-                  <p style={{ color: "red" }}>{currentChat.error}</p>
-                ) : (
+            <div className="query">
+              <p>{currentChat.query}</p>
+            </div>
+            <div className="response" id="currentChat" ref={scrollRef}>
+              <div className="lbg-logo" />
+              {currentChat.response === "LOADING" ? (
+                <Loading />
+              ) : currentChat.response === "ERROR" ? (
+                <p style={{ color: "red" }}>{currentChat.error}</p>
+              ) : (
+                <div>
                   <ReactMarkdown rehypePlugins={[rehypeHighlight]}>
                     {currentChat.response}
                   </ReactMarkdown>
-                )}
-              </div>
+                </div>
+              )}
             </div>
-          )}
-          <div className="search-container">
-            <div className="form">
-              <i className="fa-solid fa-magnifying-glass fa-xl" />
-              <input
-                type="text"
-                className="search-input"
-                placeholder="Ask anything"
-                onChange={handleSearchInput}
-                value={inputText}
-                onKeyPress={handleKeyPress}
-              />
-              <span>
-                <i className="fa-solid fa-microphone fa-lg" />
-              </span>
-              <span className="search-btn" onClick={handleButtonClick}>
-                <i className="fa-solid fa-arrow-up"></i>
-              </span>
-            </div>
-            {/* {suggestionData.length > 0 && 
+          </div>
+        )}
+        <div className="search-container">
+          <div className="form">
+            <i className="fa-solid fa-magnifying-glass fa-xl" />
+            <input
+              type="text"
+              className="search-input"
+              placeholder="Ask anything"
+              onChange={handleSearchInput}
+              value={inputText}
+              onKeyPress={handleKeyPress}
+            />
+            <span>
+              <i className="fa-solid fa-microphone fa-lg" />
+            </span>
+            <span className="search-btn" onClick={handleButtonClick}>
+              <i className="fa-solid fa-arrow-up"></i>
+            </span>
+          </div>
+          {/* {suggestionData.length > 0 && 
           <ul className="suggestion-container">
             {suggestionData.map(item => <li>{item}</li>)}
           </ul>} */}
-          </div>
-          {quickLinks.map((item) => {
-            return (
-              <QuickQueries
-                key={item.id}
-                quickLink={item}
-                handleClick={handleQuickLinkClick}
-                showPopup={handlePopup}
-              />
-            );
-          })}
         </div>
+        {quickLinks.map((item) => {
+          return (
+            <QuickQueries
+              key={item.id}
+              quickLink={item}
+              handleClick={handleQuickLinkClick}
+              showPopup={handlePopup}
+            />
+          );
+        })}
       </div>
-      <div className="navbar">
-        <ul>
-          <li>Cookies</li>
-          <li>Commercial banking</li>
-          <li>Security</li>
-          <li>Legacy</li>
-          <li>Privacy</li>
-        </ul>
-      </div>
+
+
       {showPopup && <QuickProcess showPopup={handlePopup} />}
-    </div>
+    </>
   );
 };
 

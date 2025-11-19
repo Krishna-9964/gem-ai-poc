@@ -115,6 +115,7 @@ $font_size: 14px;
     width: 30px;
     border-radius: 50%;
     margin-left: 5px;
+    text-align: center;
     i {
       color: #ffff;
       margin-top: 8px;
@@ -196,6 +197,7 @@ i {
       text-align: start;
       padding-left: 20px;
       padding-right: 70px;
+      display: flex;
       align-items: flex-start;
 
       .lbg-logo {

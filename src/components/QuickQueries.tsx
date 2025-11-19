@@ -16,7 +16,7 @@ const QuickQueries: React.FC<QuickQueriesProps> = ({ quickLink, handleClick, sho
         switch(quickLink.type){
             case "query" :  handleClick(quickLink.query);
             break;
-            case "process" : showPopup(true);
+            case "process" : window.location.href='/faster-payment';
         }
     }
 
