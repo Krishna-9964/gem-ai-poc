@@ -51,7 +51,7 @@ const FasterPayment = () => {
             <p>
               <strong>Payment frequencey</strong>
             </p>
-            <p>Once off</p>
+            <p>One off</p>
             <p>
               <strong>Processing date</strong>
             </p>
