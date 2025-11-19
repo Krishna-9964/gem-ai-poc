@@ -12,7 +12,7 @@ function App() {
         <MastHead />
         <div className="container-fluid main-content">
           <Routes>
-            <Route path="/home" element={getComponent("/home")} />
+            <Route path="/" element={getComponent("/home")} />
             <Route
               path="/faster-payment"
               element={getComponent("/faster-payment")}
